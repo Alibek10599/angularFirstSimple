@@ -8,13 +8,15 @@ import {strict} from 'assert';
 })
 export class HeaderComponent implements OnInit {
    collapsed = true;
-   @Output() featureSelected = new EventEmitter<string>();
+   // @Output() featureSelected = new EventEmitter<string>();
   constructor() { }
 
   ngOnInit(): void {
   }
 
-  onSelect(feature: string) {
+
+ /* onSelect(feature: string) {
         this.featureSelected.emit(feature);
-  }
+  }*/
+
 }

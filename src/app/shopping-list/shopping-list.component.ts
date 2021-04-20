@@ -1,22 +1,49 @@
-import { Component, OnInit } from '@angular/core';
+import {
+  AfterContentChecked,
+  AfterContentInit,
+  AfterViewInit,
+  Component,
+  DoCheck, Input,
+  OnChanges, OnDestroy,
+  OnInit,
+  Output,
+  SimpleChanges
+} from '@angular/core';
 import {Ingridient} from '../shared/ingridient.model';
+import {ShoppingListService} from './shopping-list.service';
+import {Subscription} from 'rxjs';
 
 @Component({
   selector: 'app-shopping-list',
   templateUrl: './shopping-list.component.html',
-  styleUrls: ['./shopping-list.component.css']
+  styleUrls: ['./shopping-list.component.css'],
 })
-export class ShoppingListComponent implements OnInit {
-  ingridients: Ingridient[] = [
+export class ShoppingListComponent implements OnInit, OnDestroy{
+ /* @Output() ingridients: Ingridient[] = [
     new Ingridient('apples', 5),
     new Ingridient('tomatoe', 10)
-  ];
-  constructor() { }
+  ];*/
+  someIngridient: Ingridient;
+    ingridients: Ingridient [];
+    private subscription: Subscription;
+  constructor(private shoppingListService: ShoppingListService) { }
 
-  ngOnInit(): void {
+  ngOnInit () {
+    this.ingridients = this.shoppingListService.getShoppingList();
+    this.subscription = this.shoppingListService.onIngridient.subscribe(
+      (ingridients: Ingridient []) => {
+        this.ingridients = ingridients;
+        console.log(this.ingridients);
+      }
+    );
   }
-   /*newIngridient(event:Event){
-    this.ingridients.push(event.target.value)
-   }*/
 
+  ngOnDestroy() {
+    this.subscription.unsubscribe();
+  }
+
+  onEdit(i: number) {
+    this.shoppingListService.startEditing.next(i);
+
+  }
 }

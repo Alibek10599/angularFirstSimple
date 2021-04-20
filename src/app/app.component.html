@@ -1,10 +1,38 @@
-<app-header (featureSelected)="onNavigate($event)"></app-header>
+<app-header></app-header>
 <div class="container">
   <div class="row">
     <div class="col-md-12">
-      <h2>I'm working!</h2>
-        <app-recipes *ngIf="loadedfeature==='recipe'"></app-recipes>
-        <app-shopping-list *ngIf="loadedfeature!=='recipe'"></app-shopping-list>
+      <!--<h2>I'm working!</h2>
+        <app-recipes *ngIf="loadedfeature==='recipe'"
+                      ></app-recipes>
+        <app-shopping-list *ngIf="loadedfeature!=='recipe'"></app-shopping-list>-->
+      <router-outlet></router-outlet>
     </div>
   </div>
+</div>
+
+<div class="container">
+  <div class="row">
+    <div class="col-xs-12">
+      <br><br>
+      <button class="btn btn-primary"
+      (click)="onlyOdds = !onlyOdds">Only odd nums</button>
+      <br><br>
+      <ul class="list-group">
+        <li class="list-group-item"
+        *ngFor="let number of numbers">
+          {{number}}
+        </li>
+      </ul>
+      <p appBetterHighlight
+         (mouseleave)="$event"
+         (mouseenter) = "$event"
+         defaultColor="aqua"
+         highlightColor="red"
+         >hi guys</p>
+
+    </div>
+
+  </div>
+
 </div>
