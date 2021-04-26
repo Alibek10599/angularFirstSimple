@@ -2,7 +2,7 @@ import {Component, OnInit, Output} from '@angular/core';
 import {Recipe} from '../recipe.model';
 import {RecipeService} from '../recipe.service';
 import {ActivatedRoute} from '@angular/router';
-import {FormArray, FormControl, FormGroup} from '@angular/forms';
+import {FormArray, FormControl, FormGroup, Validators} from '@angular/forms';
 import {isAsciiHexDigit} from 'codelyzer/angular/styles/chars';
 
 @Component({
@@ -43,27 +43,49 @@ export class RecipeEditComponent implements OnInit {
         for (const ingridient of recipe.ingridients) {
           recipeIngridients.push(
             new FormGroup({
-              'name': new FormControl(ingridient.name),
-              'amount': new FormControl(ingridient.amount)
+              'name': new FormControl(ingridient.name, Validators.required),
+              'amount': new FormControl(ingridient.amount, [
+                Validators.required,
+                  Validators.pattern(/^[1-9]+[0-9]*$/)
+                ])
             })
           );
         }
       }
     }
     this.recipeForm = new FormGroup({
-      'name':  new FormControl(recipeName),
-      'imagePath': new FormControl(recipeImagePath),
-      'description': new FormControl(recipeDescription),
+      'name':  new FormControl(recipeName, Validators.required),
+      'imagePath': new FormControl(recipeImagePath, Validators.required),
+      'description': new FormControl(recipeDescription, Validators.required),
       'ingridients' : recipeIngridients
     });
   }
 
   onSubmit() {
+    if (this.editMode) {
+      this.rspService.updateRecipe(this.index, this.recipeForm.value);
+
+    } else {
+      this.rspService.recipeSelected.next(this.recipeForm.value);
+    }
 
   }
 
   get controls() { // a getter!
     return (<FormArray>this.recipeForm.get('ingridients')).controls;
+  }
+
+  onAddIngridient() {
+    (<FormArray>this.recipeForm.get('ingridients')).push(
+      new FormGroup({
+        'name': new FormControl(null, Validators.required),
+        'amount': new FormControl(null, [
+          Validators.required,
+          Validators.pattern(/^[1-9]+[0-9]*$/)
+          ]
+        )
+      })
+    );
   }
 
 
